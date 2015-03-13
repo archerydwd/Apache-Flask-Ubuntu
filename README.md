@@ -107,6 +107,7 @@ mkdir flask_blog
 mv * flask_blog/
 touch flask_blog.wsgi
 cd flask_blog/
+mkdir static
 vim __init__.py
 ```
 
@@ -202,17 +203,149 @@ To make our changes take effect.
 sudo etc/init.d/apache2 reload
 ```
 
+That should be it for the flask_blog application. You should now be able to open a browser and go to http://localhost and view the blog application running through apache.
 
+=
+###Build the Flask Sakila Application
 
+**Install and set up mysql**
 
+When it asks for a password, you can set it to what you want. For the purposes of this I will use the password "password"
 
+```
+sudo apt-get install mysql-server
+```
 
+Start the MySQL Server
 
+```
+sudo etc/init.d/apache2 start
+```
 
+**Install msql-connector-python**
 
+```
+sudo pip install mysql-connector-python --allow-external mysql-connector-python
+```
 
+**Create the database**
 
+To create the database, we need to login and enter a few commands. Please note, if this is your first time using mysql, the first time you login and enter a password, this acts as setting a password. If you don't want to set a password (bad idea) just hit enter when it requests the password.
 
+```
+mysql -u root -p
+create database flask_sakila;
+use flask_sakila;
 
+source /home/darren/git/flask_sakila/flask_sakila/flask_sakila_dump.sql
+```
+
+Then to check that this has indeed worked, you can enter the following command and you should see a list of the tables in the database:
+
+```
+show tables;
+```
+
+**Create the sakila app**
+
+Change directory to the git folder and then:
+
+```
+git clone https://github.com/archerydwd/flask_sakila.git
+cd flask_sakila/
+mkdir flask_sakila/
+mv * flask_sakila/
+touch flask_sakila.wsgi
+cd flask_sakila/
+mv main.py __init__.py
+mkdir static
+vim __init__.py
+```
+
+Then while editing __init__.py, make the following changes:
+* At the bottom of the file you will see the line: app.config['DB_PASSWORD'] = '' add the password you used when setting up mysql here, for me it will be: app.config['DB_PASSWORD'] = 'password'
+* Also at the end of the file you will see a line: if __name__ == "__main__": This line needs to be moved below the app.config['DB'] = 'flask_sakila' line and above the app.run() line. This is because apache will not run anything inside the if statement: if __name__ == "__main__": so we need to move all the app.config lines out of it.
+
+=
+###Configure and Enable a New Virtual Host
+
+**Create and edit the config file for the site**
+
+```
+sudo touch etc/apache2/sites-available/flask_sakila.conf
+sudo vim etc/apache2/sites-available/flask_sakila.conf
+```
+
+Insert the following:
+
+```
+<VirtualHost *:80>
+        ServerName 127.0.0.1:80
+        WSGIScriptAlias / /home/darren/git/flask_sakila/flask_sakila.wsgi
+        <Directory /home/darren/git/flask_sakila/flask_sakila/>
+                Order allow,deny
+                Allow from all
+        </Directory>
+        Alias /static /home/darren/git/flask_sakila/flask_sakila/static
+        <Directory /home/darren/git/flask_sakila/flask_sakila/static/>
+                Order allow,deny
+                Allow from all
+        </Directory>
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        LogLevel warn
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+
+**Disable other virtual hosts**
+
+If you are unsure what other virtual hosts are running, you can issue  the following command:
+
+```
+sudo ls etc/apache2/sites-enabled/
+```
+
+The above will produce a list of all running hosts, use the names in the below command one after another.
+
+```
+sudo a2dissite flask_blog.conf
+```
+
+**Enable the virtual host for flask_sakila**
+
+```
+sudo a2ensite flask_sakila.conf
+```
+
+**Edit the wsgi file**
+
+Change directory to git/flask_sakila/ and do the following:
+
+```
+vim flask_sakila.wsgi
+```
+
+And insert the following:
+
+```
+#!/usr/bin/python
+import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0,"/home/darren/git/flask_sakila/")
+
+from flask_sakila import app as application
+application.secret_key = 'ThisIsMyVerySecretKey'
+```
+
+**Restart Apache**
+
+To make our changes take effect.
+
+```
+sudo etc/init.d/apache2 reload
+```
+
+That should be it for the flask_sakila application. You should now be able to open a browser and go to http://localhost and view the sakila application running through apache.
 
 
