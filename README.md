@@ -132,11 +132,75 @@ sudo touch etc/apache2/sites-available/flask_blog.conf
 sudo vim etc/apache2/sites-available/flask_blog.conf
 ```
 
+Insert the following:
 
+```
+<VirtualHost *:80>
+        ServerName 127.0.0.1:80
+        WSGIScriptAlias / /home/darren/git/flask_blog/flask_blog.wsgi
+        <Directory /home/darren/git/flask_blog/flask_blog/>
+                Order allow,deny
+                Allow from all
+        </Directory>
+        Alias /static /home/darren/git/flask_blog/flask_blog/static
+        <Directory /home/darren/git/flask_blog/flask_blog/static/>
+                Order allow,deny
+                Allow from all
+        </Directory>
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        LogLevel warn
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
 
+**Disable other virtual hosts**
 
+If you are unsure what other virtual hosts are running, you can issue  the following command:
 
+```
+sudo ls etc/apache2/sites-enabled/
+```
 
+The above will produce a list of all running hosts, use the names in the below command one after another.
+
+```
+sudo a2dissite ror_sakila.conf
+```
+
+**Enable the virtual host for flask_blog**
+
+```
+sudo a2ensite flask_blog.conf
+```
+
+**Edit the wsgi file**
+
+Change directory to git/flask_blog/ and do the following:
+
+```
+vim flask_blog.wsgi
+```
+
+And insert the following:
+
+```
+#!/usr/bin/python
+import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0,"/home/darren/git/flask_blog/")
+
+from flask_blog import app as application
+application.secret_key = 'ThisIsMyVerySecretKey'
+```
+
+**Restart Apache**
+
+To make our changes take effect.
+
+```
+sudo etc/init.d/apache2 reload
+```
 
 
 
