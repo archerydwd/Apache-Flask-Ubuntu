@@ -110,7 +110,7 @@ cd flask_blog/
 vim __init__.py
 ```
 
-When editing the above __init__.py file, make the following changes:
+When editing the above __init__.py file, make the following change:
 * Change line 21 from connection = sqlite3.connect('blogdata.db', check_some_thread=False) to connection = sqlite3.connect('/home/darren/git/flask_blog/flask_blog/blogdata.db', check_some_thread=False) making sure to replace darren with your own name shown on your terminal, eg: darren@darren-latitude-E6420:/$
 
 Next we need to change the permissions on the blogdata.db file and on its containing folder for sqlite to be readable and written to.
