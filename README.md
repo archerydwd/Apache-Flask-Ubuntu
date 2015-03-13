@@ -348,4 +348,7 @@ sudo etc/init.d/apache2 reload
 
 That should be it for the flask_sakila application. You should now be able to open a browser and go to http://localhost and view the sakila application running through apache.
 
+=
+###Run the tests
 
+You can now run the Gatling tests on the flask blog & sakila apps by following the instructions found here: https://github.com/archerydwd/gatling-tests
