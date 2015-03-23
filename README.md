@@ -124,7 +124,7 @@ sudo chmod 777 blogdata.db
 ```
 
 =
-###Configure and Enable a New Virtual Host
+###Configure and Enable a New Virtual Host for the flask blog application
 
 **Create and edit the config file for the site**
 
@@ -267,7 +267,7 @@ Then while editing __init__.py, make the following changes:
 * Also at the end of the file you will see a line: if __name__ == "__main__": This line needs to be moved below the app.config['DB'] = 'flask_sakila' line and above the app.run() line. This is because apache will not run anything inside the if statement: if __name__ == "__main__": so we need to move all the app.config lines out of it.
 
 =
-###Configure and Enable a New Virtual Host
+###Configure and Enable a New Virtual Host for the flask sakila application
 
 **Create and edit the config file for the site**
 
@@ -352,3 +352,10 @@ That should be it for the flask_sakila application. You should now be able to op
 ###Run the tests
 
 You can now run the Gatling tests on the flask blog & sakila apps by following the instructions found here: https://github.com/archerydwd/gatling-tests
+
+=
+###The End
+
+Thanks for reading.
+
+Darren.
