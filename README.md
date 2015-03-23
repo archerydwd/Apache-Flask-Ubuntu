@@ -1,12 +1,12 @@
 # Apache-Flask-Ubuntu
-Instructions on installing Apache &amp; Flask on ubuntu
+Guide on installing and building Flask applications with Apache on Ubuntu 
 
 =
 ###Preconditions
 
 > You have a clean instance of ubuntu running.
 
-You can get ubuntu from here: http://www.ubuntu.com/download
+You can get Ubuntu from here: http://www.ubuntu.com/download
 
 =
 ###Install Apache
